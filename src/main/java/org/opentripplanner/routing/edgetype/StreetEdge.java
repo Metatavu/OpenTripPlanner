@@ -121,6 +121,9 @@ public class StreetEdge extends Edge implements Cloneable {
 
     /** The angle at the start of the edge geometry. Internal representation like that of inAngle. */
     private byte outAngle;
+    
+    /** Air quality indices */
+    private byte[] aqi;
 
     public StreetEdge(StreetVertex v1, StreetVertex v2, LineString geometry,
                       I18NString name, double length,
@@ -908,4 +911,23 @@ public class StreetEdge extends Edge implements Cloneable {
         else
             return -1;
     }
+    
+    /**
+     * Returns air quality index array. 
+     * 
+     * Each cell represents hourly average of air quality in the edge
+     * 
+     * @return air quality index array
+     */
+    public byte[] getAqi() {
+      return aqi;
+    }
+    
+    /**
+     * Sets an air quality index array. 
+     */
+    public void setAqi(byte[] aqi) {
+      this.aqi = aqi;
+    }
+    
 }

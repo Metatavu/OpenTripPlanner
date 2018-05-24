@@ -15,6 +15,8 @@ package org.opentripplanner.graph_builder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
+
+import org.opentripplanner.airquality.AirQualityIndexBuilderModule;
 import org.opentripplanner.graph_builder.model.GtfsBundle;
 import org.opentripplanner.graph_builder.module.DirectTransferGenerator;
 import org.opentripplanner.graph_builder.module.EmbedConfig;
@@ -184,6 +186,7 @@ public class GraphBuilder implements Runnable {
         GraphBuilder graphBuilder = new GraphBuilder();
         List<File> gtfsFiles = Lists.newArrayList();
         List<File> osmFiles =  Lists.newArrayList();
+        List<File> aqiNcFiles =  Lists.newArrayList();
         JsonNode builderConfig = null;
         JsonNode routerConfig = null;
         File demFile = null;
@@ -217,6 +220,10 @@ public class GraphBuilder implements Runnable {
                         LOG.info("Skipping DEM file {}", file);
                     }
                     break;
+                case AQI_NC:
+                  LOG.info("Found AQI_NC file {}", file);
+                  aqiNcFiles.add(file);
+                  break;
                 case OTHER:
                     LOG.warn("Skipping unrecognized file '{}'", file);
             }
@@ -312,10 +319,16 @@ public class GraphBuilder implements Runnable {
                 graphBuilder.addModule(new DirectTransferGenerator(builderParams.maxTransferDistance));
             }
         }
+        
         graphBuilder.addModule(new EmbedConfig(builderConfig, routerConfig));
         if (builderParams.htmlAnnotations) {
             graphBuilder.addModule(new AnnotationsToHTML(params.build, builderParams.maxHtmlAnnotationsPerFile));
         }
+
+        if (!aqiNcFiles.isEmpty()) {
+          graphBuilder.addModule(new AirQualityIndexBuilderModule(aqiNcFiles));
+        }
+        
         graphBuilder.serializeGraph = ( ! params.inMemory ) || params.preFlight;
         return graphBuilder;
     }
@@ -326,7 +339,7 @@ public class GraphBuilder implements Runnable {
      * types are present. This helps point out when config files have been misnamed (builder-config vs. build-config).
      */
     private static enum InputFileType {
-        GTFS, OSM, DEM, CONFIG, GRAPH, OTHER;
+        GTFS, OSM, DEM, CONFIG, GRAPH, AQI_NC, OTHER;
         public static InputFileType forFile(File file) {
             String name = file.getName();
             if (name.endsWith(".zip")) {
@@ -340,6 +353,7 @@ public class GraphBuilder implements Runnable {
             if (name.endsWith(".pbf")) return OSM;
             if (name.endsWith(".osm")) return OSM;
             if (name.endsWith(".osm.xml")) return OSM;
+            if (name.endsWith(".aqi.nc")) return AQI_NC;
             if (name.endsWith(".tif") || name.endsWith(".tiff")) return DEM; // Digital elevation model (elevation raster)
             if (name.equals("Graph.obj")) return GRAPH;
             if (name.equals(GraphBuilder.BUILDER_CONFIG_FILENAME) || name.equals(Router.ROUTER_CONFIG_FILENAME)) {
