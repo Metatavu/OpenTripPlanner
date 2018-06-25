@@ -4,6 +4,8 @@ This fork contains functionality for routing users by air quality. Air quality d
 
 This branch is forked from the HSLDevcom (https://github.com/HSLdevcom/OpenTripPlanner) version of OpenTripPlanner NOT the generic https://github.com/opentripplanner/OpenTripPlanner one.
 
+The fork is made from the HSLDevcom version because generic one is not compatible with the Digitransit-UI. This fork can be used with the https://github.com/Metatavu/digitransit-ui/tree/air-quality fork of the Digitransit-UI.
+
 If you are looking for the air quality routing for the original OTP, check following branch: 
 
 https://github.com/Metatavu/OpenTripPlanner/tree/clean-air
