@@ -109,7 +109,13 @@ public abstract class RoutingResource {
      */
     @QueryParam("walkReluctance")
     protected Double walkReluctance;
-
+    
+    /**
+     * A multiplier for how much the air quality should affect the routing. Defaults to 0
+     */
+    @QueryParam("airQualityWeight")
+    protected Double airQualityWeight;
+    
     /** How much more reluctant is the user to walk on streets with car traffic allowed **/
     @QueryParam("walkOnStreetReluctance")
     protected Double walkOnStreetReluctance;
@@ -432,6 +438,9 @@ public abstract class RoutingResource {
 
         if (walkReluctance != null)
             request.setWalkReluctance(walkReluctance);
+        
+        if (airQualityWeight != null)
+            request.setAirQualityWeight(airQualityWeight);
 
         if (waitReluctance != null)
             request.setWaitReluctance(waitReluctance);

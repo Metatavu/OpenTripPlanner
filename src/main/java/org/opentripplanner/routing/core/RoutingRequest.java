@@ -179,6 +179,11 @@ public class RoutingRequest implements Cloneable, Serializable {
      *  of not wanting to walk too much without asking for totally ridiculous itineraries, but this
      *  observation should in no way be taken as scientific or definitive. Your mileage may vary.*/
     public double walkReluctance = 2.0;
+    
+    /**
+     * A multiplier for how much the air quality should affect the routing. Defaults to 0
+     */
+    public double airQualityWeight = 0.0;
 
     /** Used instead of walk reluctance for stairs */
     public double stairsReluctance = 2.0;
@@ -1161,6 +1166,10 @@ public class RoutingRequest implements Cloneable, Serializable {
             this.walkReluctance = walkReluctance;
             // Do not set bikeWalkingOptions.walkReluctance here, because that needs a higher value.
         }
+    }
+    
+    public void setAirQualityWeight(double airQualityWeight) {
+      this.airQualityWeight = airQualityWeight;
     }
 
     public void setWalkOnStreetReluctance(double walkOnStreetReluctance) {

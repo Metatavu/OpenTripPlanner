@@ -82,6 +82,7 @@
         <jackson.version>2.5.3</jackson.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <aws.version>1.9.39</aws.version>
+        <netcdf4.version>4.5.5</netcdf4.version>
     </properties>
 
     <distributionManagement>
@@ -817,6 +818,14 @@
             <groupId>org.eclipse.paho</groupId>
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
             <version>1.2.0</version>
+        </dependency>
+        
+        <!-- netcdf4 -->
+        
+        <dependency>
+          <groupId>edu.ucar</groupId>
+          <artifactId>netcdf4</artifactId>
+          <version>${netcdf4.version}</version>
         </dependency>
     </dependencies>
 

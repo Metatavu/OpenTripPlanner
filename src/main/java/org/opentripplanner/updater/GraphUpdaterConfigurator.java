@@ -14,6 +14,8 @@
 package org.opentripplanner.updater;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import org.opentripplanner.airquality.AirQualityGraphUpdater;
 import org.opentripplanner.routing.graph.Graph;
 import org.opentripplanner.updater.alerts.GtfsRealtimeAlertsUpdater;
 import org.opentripplanner.updater.bike_park.BikeParkUpdater;
@@ -118,7 +120,10 @@ public abstract class GraphUpdaterConfigurator {
                 }
                 else if (type.equals("opentraffic-updater")) {
                     updater = new OpenTrafficUpdater();
-                }
+                } 
+                else if (type.equals("air-quality")) {
+                    updater = new AirQualityGraphUpdater();
+               }
             }
 
             // Configure and activate the new updater.

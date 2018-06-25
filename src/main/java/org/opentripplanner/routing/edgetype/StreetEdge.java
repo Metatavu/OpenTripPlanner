@@ -39,6 +39,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -123,6 +125,9 @@ public class StreetEdge extends Edge implements Cloneable {
 
     /** The angle at the start of the edge geometry. Internal representation like that of inAngle. */
     private byte outAngle;
+    
+    /** Air quality indices */
+    private byte[] aqi;
 
     public StreetEdge(StreetVertex v1, StreetVertex v2, LineString geometry,
                       I18NString name, double length,
@@ -525,6 +530,23 @@ public class StreetEdge extends Edge implements Cloneable {
         s1.incrementTimeInSeconds(roundedTime);
 
         s1.incrementWeight(weight);
+        
+        if (options.airQualityWeight > 0) {
+          byte[] aqiValues = getAqi();
+          if (aqiValues != null && aqiValues.length > 0) {
+            int airQualityHour = (int) ChronoUnit.HOURS.between(Instant.now(), options.getDateTime().toInstant());
+            if (airQualityHour >= 0 && airQualityHour < aqi.length) {
+              double airQualityWeight = (aqiValues[airQualityHour] + 127) * options.airQualityWeight;
+              if (airQualityWeight > 0) {
+                s1.incrementWeight(airQualityWeight);
+              } else {
+                LOG.warn("StreetEdge returned air quality weight {}", airQualityWeight); 
+              }
+            } else {
+              LOG.warn("StreetEdge does not contain air quality index for hour {}", airQualityHour);
+            }
+          }
+        }
 
         return s1;
     }
@@ -926,5 +948,23 @@ public class StreetEdge extends Edge implements Cloneable {
             return ((SplitterVertex) tov).nextNodeId;
         else
             return -1;
+    }
+    
+    /**
+     * Returns air quality index array. 
+     * 
+     * Each cell represents hourly average of air quality in the edge
+     * 
+     * @return air quality index array
+     */
+    public byte[] getAqi() {
+      return aqi;
+    }
+    
+    /**
+     * Sets an air quality index array. 
+     */
+    public void setAqi(byte[] aqi) {
+      this.aqi = aqi;
     }
 }

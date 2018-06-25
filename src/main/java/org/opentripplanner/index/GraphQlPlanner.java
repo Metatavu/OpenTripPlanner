@@ -171,6 +171,7 @@ public class GraphQlPlanner {
         callWith.argument("carParkCarLegWeight", request::setCarParkCarLegWeight);
         callWith.argument("itineraryFiltering", request::setItineraryFiltering);
         callWith.argument("walkReluctance", request::setWalkReluctance);
+        callWith.argument("airQualityWeight", request::setAirQualityWeight);
         callWith.argument("walkOnStreetReluctance", request::setWalkOnStreetReluctance);
         callWith.argument("waitReluctance", request::setWaitReluctance);
         callWith.argument("waitAtBeginningFactor", request::setWaitAtBeginningFactor);
