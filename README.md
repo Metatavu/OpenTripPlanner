@@ -1,3 +1,27 @@
+## About this fork
+
+This fork contains functionality for routing users by air quality. Air quality data should be provided as ENFUSER NetCDF format.
+
+This branch is forked from the HSLDevcom (https://github.com/HSLdevcom/OpenTripPlanner) version of OpenTripPlanner NOT the generic https://github.com/opentripplanner/OpenTripPlanner one.
+
+If you are looking for the air quality routing for the original OTP, check following branch: 
+
+https://github.com/Metatavu/OpenTripPlanner/tree/clean-air
+
+Air quality data is updated into the graph with polling updater. Updater can be configured with router-config.json.
+
+Updater requires that updater type is air-quality and that airQualityFile -property points to a air quality file. 
+
+For example:
+
+    "updaters": [
+      {
+        "type": "air-quality",
+        "frequencySec": 600,
+        "airQualityFile": "/somewhere/in/disk/otpdata/mydata.aqi.nc"
+      }
+    ]
+
 ## Overview
 
 OpenTripPlanner (OTP) is an open source multi-modal trip planner. It depends on open data in open standard file formats (GTFS and OpenStreetMap), and includes a REST API for journey planning as well as a map-based Javascript client. OpenTripPlanner can also create travel time contour visualizations and compute accessibility indicators for planning and research applications. For more information, see the project website: http://opentripplanner.org
