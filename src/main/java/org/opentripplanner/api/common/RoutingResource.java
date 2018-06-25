@@ -109,7 +109,13 @@ public abstract class RoutingResource {
      */
     @QueryParam("walkReluctance")
     protected Double walkReluctance;
-
+    
+    /**
+     * A multiplier for how much the air quality should affect the routing. Defaults to 0
+     */
+    @QueryParam("airQualityWeight")
+    protected Double airQualityWeight;
+    
     /**
      * How much worse is waiting for a transit vehicle than being on a transit vehicle, as a
      * multiplier. The default value treats wait and on-vehicle time as the same.
@@ -433,6 +439,9 @@ public abstract class RoutingResource {
 
         if (waitReluctance != null)
             request.setWaitReluctance(waitReluctance);
+
+        if (airQualityWeight != null)
+            request.setAirQualityWeight(airQualityWeight);
 
         if (waitAtBeginningFactor != null)
             request.setWaitAtBeginningFactor(waitAtBeginningFactor);

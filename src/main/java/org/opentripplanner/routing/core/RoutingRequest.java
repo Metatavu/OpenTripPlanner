@@ -163,6 +163,11 @@ public class RoutingRequest implements Cloneable, Serializable {
      * If this takes less than optimize_transfer_penalty seconds, then that's what we'll return.
      */
     public int transferPenalty = 0;
+    
+    /**
+     * A multiplier for how much the air quality should affect the routing. Defaults to 0
+     */
+    public double airQualityWeight = 0.0;
 
     /** A multiplier for how bad walking is, compared to being in transit for equal lengths of time.
      *  Defaults to 2. Empirically, values between 10 and 20 seem to correspond well to the concept
@@ -1114,6 +1119,10 @@ public class RoutingRequest implements Cloneable, Serializable {
             this.walkReluctance = walkReluctance;
             // Do not set bikeWalkingOptions.walkReluctance here, because that needs a higher value.
         }
+    }
+
+    public void setAirQualityWeight(double airQualityWeight) {
+        this.airQualityWeight = airQualityWeight;
     }
 
     public void setWaitReluctance(double waitReluctance) {
