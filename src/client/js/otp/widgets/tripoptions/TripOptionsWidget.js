@@ -682,6 +682,49 @@ otp.widgets.tripoptions.MaxBikeSelector =
 
 });
 
+
+//** AirQualitySelector **//
+
+otp.widgets.tripoptions.AirQualitySelector =
+    otp.Class(otp.widgets.tripoptions.MaxDistanceSelector, {
+    
+    id           : null,
+    label       : _tr("Air quality")+":",
+    
+    initialize : function(tripWidget) {
+        otp.widgets.tripoptions.TripOptionsWidgetControl.prototype.initialize.apply(this, arguments);
+        this.id = tripWidget.id+"-airQualitySelector";
+    
+        ich['otp-tripOptions-airQualitySelector']({
+          widgetId : this.id,
+          label : this.label
+        }).appendTo(this.$());
+    },
+    
+    doAfterLayout : function() {
+        var this_ = this;
+    
+        $('#'+this.id+'-value').change(function() {
+            var weight = parseFloat($(this).val());
+            this_.setWeight(weight);
+        });
+    },
+    
+    restorePlan : function(data) {
+    },
+    
+    setWeight : function(weight) {
+        this.tripWidget.inputChanged({
+          airQualityWeight : weight,
+        });
+    },
+
+    isApplicableForMode : function(mode) {
+        return true;
+    }
+
+});
+
 //** PreferredRoutes **//
 
 otp.widgets.tripoptions.PreferredRoutes =
