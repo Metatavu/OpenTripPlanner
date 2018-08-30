@@ -115,6 +115,12 @@ public abstract class RoutingResource {
      */
     @QueryParam("airQualityWeight")
     protected Double airQualityWeight;
+
+    /**
+     * A air quality routing mode. Either TIME or DISTANCE. Defaults to TIME
+     */
+    @QueryParam("airQualityMode")
+    protected String airQualityMode;
     
     /** How much more reluctant is the user to walk on streets with car traffic allowed **/
     @QueryParam("walkOnStreetReluctance")
@@ -441,6 +447,9 @@ public abstract class RoutingResource {
         
         if (airQualityWeight != null)
             request.setAirQualityWeight(airQualityWeight);
+        
+        if (airQualityMode != null)
+            request.setAirQualityMode(airQualityMode);
 
         if (waitReluctance != null)
             request.setWaitReluctance(waitReluctance);

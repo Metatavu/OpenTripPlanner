@@ -184,6 +184,11 @@ public class RoutingRequest implements Cloneable, Serializable {
      * A multiplier for how much the air quality should affect the routing. Defaults to 0
      */
     public double airQualityWeight = 0.0;
+    
+    /** 
+     * Air quality calculation mode, either TIME or DISTANCE 
+     **/
+    public String airQualityMode = "TIME";
 
     /** Used instead of walk reluctance for stairs */
     public double stairsReluctance = 2.0;
@@ -1170,6 +1175,10 @@ public class RoutingRequest implements Cloneable, Serializable {
     
     public void setAirQualityWeight(double airQualityWeight) {
       this.airQualityWeight = airQualityWeight;
+    }
+    
+    public void setAirQualityMode(String airQualityMode) {
+      this.airQualityMode = airQualityMode;
     }
 
     public void setWalkOnStreetReluctance(double walkOnStreetReluctance) {

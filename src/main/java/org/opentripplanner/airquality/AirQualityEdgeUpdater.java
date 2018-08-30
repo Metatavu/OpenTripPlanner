@@ -61,8 +61,10 @@ public class AirQualityEdgeUpdater {
     Vertex toVertex = streetEdge.getToVertex();
     Coordinate fromCoordinate = fromVertex.getCoordinate();
     Coordinate toCoordinate = toVertex.getCoordinate();
-    byte[] aqi = getAverageAq(fromCoordinate.x, fromCoordinate.y, toCoordinate.x, toCoordinate.y);
+    float[] aqi = getAverageAq(fromCoordinate.x, fromCoordinate.y, toCoordinate.x, toCoordinate.y);
     streetEdge.setAqi(aqi);
+    streetEdge.setAqiTime(this.airQualityDataFile.getOriginDate().toInstant().toEpochMilli());
+    
     edgesUpdated++;
     
     if (LOG.isInfoEnabled() && (edgesUpdated % REPORT_EVERY_N_EDGE) == 0) {
@@ -81,7 +83,7 @@ public class AirQualityEdgeUpdater {
    * @param toLatitude to latitude
    * @return array of air quality index samples in time
    */
-  private byte[] getAverageAq(double fromLongitude, double fromLatitude, double toLongitude, double toLatitude) {
+  private float[] getAverageAq(double fromLongitude, double fromLatitude, double toLongitude, double toLatitude) {
     EdgeAirQuality edgeAirQuality = new EdgeAirQuality();
     
     getClosestSamples(fromLongitude, fromLatitude, toLongitude, toLatitude).stream().forEach(sample -> {
@@ -104,8 +106,8 @@ public class AirQualityEdgeUpdater {
    * @param toLatitude to latitude
    * @return closest air quality samples for given line 
    */
-  private List<byte[]> getClosestSamples(double fromLongitude, double fromLatitude, double toLongitude, double toLatitude) {
-    List<byte[]> result = new ArrayList<>();
+  private List<float[]> getClosestSamples(double fromLongitude, double fromLatitude, double toLongitude, double toLatitude) {
+    List<float[]> result = new ArrayList<>();
     double azimuth = getAzimuth(fromLongitude, fromLatitude, toLongitude, toLatitude);
     double distance = getDistance(fromLongitude, fromLatitude, toLongitude, toLatitude);
     double spacing = 12d;
@@ -126,7 +128,7 @@ public class AirQualityEdgeUpdater {
    * @param samplePoint point
    * @return closest air quality index for given point
    */
-  private byte[] getClosestAqi(Point2D samplePoint) {
+  private float[] getClosestAqi(Point2D samplePoint) {
     double lon = samplePoint.getX();
     double lat = samplePoint.getY();
    
@@ -134,7 +136,7 @@ public class AirQualityEdgeUpdater {
     int latIndex = getClosestIndex(airQualityDataFile.getLatitudeArray(), lat);
 
     int timeSize = (int) airQualityDataFile.getTimeArray().getSize();
-    byte[] result = new byte[timeSize];
+    float[] result = new float[timeSize];
     for (int timeIndex = 0; timeIndex < timeSize; timeIndex++) {
       result[timeIndex] = airQualityDataFile.getAqiArray().get(timeIndex, latIndex, lonIndex);
     }

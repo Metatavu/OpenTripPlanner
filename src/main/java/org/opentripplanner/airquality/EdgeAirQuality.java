@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class EdgeAirQuality {
   
-  private Map<Integer, byte[]> airQualities; 
+  private Map<Integer, float[]> airQualities; 
   
   /**
    * Constructor
@@ -29,12 +29,12 @@ public class EdgeAirQuality {
    * @param time time
    * @param airQuality air quality index
    */
-  public void addAirQualitySample(int time, byte airQuality) {
-    byte[] existing = airQualities.get(time);
+  public void addAirQualitySample(int time, float airQuality) {
+    float[] existing = airQualities.get(time);
     if (existing == null) {
-      airQualities.put(time, new byte[] { airQuality });
+      airQualities.put(time, new float[] { airQuality });
     } else {
-      byte[] updated = new byte[existing.length + 1];
+      float[] updated = new float[existing.length + 1];
       System.arraycopy(existing, 0, updated, 0, existing.length);
       updated[existing.length] = airQuality;
       airQualities.put(time, updated);
@@ -47,7 +47,7 @@ public class EdgeAirQuality {
    * @param time time
    * @return air quality index
    */
-  public byte getAirQuality(int time) {
+  public float getAirQuality(int time) {
     return getAverage(getAirQualitiesInTime(time));
   }
   
@@ -57,8 +57,8 @@ public class EdgeAirQuality {
    * @param times times
    * @return air quality indexes
    */
-  public byte[] getAirQualities(int times) {
-    byte[] result = new byte[times];
+  public float[] getAirQualities(int times) {
+    float[] result = new float[times];
     
     for (int time = 0; time < times; time++) {
       result[time] = getAirQuality(time);
@@ -73,18 +73,18 @@ public class EdgeAirQuality {
    * @param values values
    * @return average
    */
-  private byte getAverage(byte[] values) {
+  private float getAverage(float[] values) {
     if (values == null) {
       return 0;
     }
     
-    double result = 0d;
+    float result = 0f;
     
-    for (byte value : values) {
+    for (float value : values) {
       result += value;
     }
     
-    return (byte) Math.round(result / values.length);
+    return result / values.length;
   }
   
   /**
@@ -93,7 +93,7 @@ public class EdgeAirQuality {
    * @param time time
    * @return array of air quality indices
    */
-  private byte[] getAirQualitiesInTime(int time) {
+  private float[] getAirQualitiesInTime(int time) {
     return airQualities.get(time);
   }
 

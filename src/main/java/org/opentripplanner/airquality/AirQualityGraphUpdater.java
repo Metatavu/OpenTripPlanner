@@ -46,10 +46,19 @@ public class AirQualityGraphUpdater extends PollingGraphUpdater {
     private static final Logger LOG = LoggerFactory.getLogger(AirQualityGraphUpdater.class);
     private GraphUpdaterManager updaterManager;
     private File airQualityFile;
+    private String latitudeVariable;
+    private String longitudeVariable;
+    private String aqiVariable;
+    private String timeVariable; 
 
     @Override
     protected void configurePolling(Graph graph, JsonNode config) throws Exception {
       airQualityFile = new File (config.path("airQualityFile").asText());
+      latitudeVariable = config.path("latitudeVariable").asText("latitude");
+      longitudeVariable = config.path("longitudeVariable").asText("longitude");
+      aqiVariable = config.path("aqiVariable").asText("AQI");
+      timeVariable = config.path("timeVariable").asText("time");
+      
       LOG.info("Configured air quality updater: file={}", airQualityFile);
     }
 
@@ -71,9 +80,9 @@ public class AirQualityGraphUpdater extends PollingGraphUpdater {
           LOG.warn("Air quality file {} does not exist", airQualityFile);
           return;
         }
-        
-        AirQualityUpdater updater = new AirQualityUpdater(Arrays.asList(airQualityFile));
-        String errors = updater.checkFiles();
+
+        AirQualityUpdater updater = new AirQualityUpdater(latitudeVariable, longitudeVariable, aqiVariable, timeVariable, airQualityFile);
+        String errors = updater.checkFile();
         if (StringUtils.isNotEmpty(errors)) {
           LOG.warn("Errors {} in air quality file {}", errors, airQualityFile);
           return;

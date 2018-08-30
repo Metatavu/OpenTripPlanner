@@ -127,7 +127,10 @@ public class StreetEdge extends Edge implements Cloneable {
     private byte outAngle;
     
     /** Air quality indices */
-    private byte[] aqi;
+    private float[] aqi;
+    
+    /** Value indicating time of first aqi array cell **/
+    private long aqiTime;
 
     public StreetEdge(StreetVertex v1, StreetVertex v2, LineString geometry,
                       I18NString name, double length,
@@ -531,16 +534,27 @@ public class StreetEdge extends Edge implements Cloneable {
 
         s1.incrementWeight(weight);
         
-        if (options.airQualityWeight > 0) {
-          byte[] aqiValues = getAqi();
+        boolean walkingOrBiking = traverseMode == TraverseMode.WALK || traverseMode == TraverseMode.BICYCLE;
+        if (options.airQualityWeight > 0 && walkingOrBiking) {
+          float[] aqiValues = getAqi();
           if (aqiValues != null && aqiValues.length > 0) {
-            int airQualityHour = (int) ChronoUnit.HOURS.between(Instant.now(), options.getDateTime().toInstant());
+            int airQualityHour = (int) ChronoUnit.HOURS.between(Instant.ofEpochMilli(getAqiTime()), options.getDateTime().toInstant());
             if (airQualityHour >= 0 && airQualityHour < aqi.length) {
-              double airQualityWeight = (aqiValues[airQualityHour] + 127) * options.airQualityWeight;
+              double airQualityMultiplier = 0d;
+              
+              if ("DISTANCE".equals(options.airQualityMode)) {
+                airQualityMultiplier = s0.getWalkDistanceDelta() * options.airQualityWeight;  
+              } else {
+                airQualityMultiplier = roundedTime * options.airQualityWeight;  
+              }
+
+              double airQualityWeight = aqiValues[airQualityHour] * airQualityMultiplier;
+
               if (airQualityWeight > 0) {
                 s1.incrementWeight(airQualityWeight);
               } else {
-                LOG.warn("StreetEdge returned air quality weight {}", airQualityWeight); 
+                LOG.warn("StreetEdge returned air quality weight {}. Request details: air quality weight {}, mode {}, walk distance delta {}, time delta {}, hour, raw aqi {}, roundedTime {}", airQualityWeight, 
+                  options.airQualityWeight, options.airQualityMode, s0.getWalkDistanceDelta(), s0.getTimeDeltaSeconds(), airQualityHour, aqiValues[airQualityHour], roundedTime); 
               }
             } else {
               LOG.warn("StreetEdge does not contain air quality index for hour {}", airQualityHour);
@@ -957,14 +971,23 @@ public class StreetEdge extends Edge implements Cloneable {
      * 
      * @return air quality index array
      */
-    public byte[] getAqi() {
+    public float[] getAqi() {
       return aqi;
     }
     
     /**
      * Sets an air quality index array. 
      */
-    public void setAqi(byte[] aqi) {
+    public void setAqi(float[] aqi) {
       this.aqi = aqi;
     }
+    
+    public long getAqiTime() {
+      return aqiTime;
+    }
+    
+    public void setAqiTime(long aqiTime) {
+      this.aqiTime = aqiTime;
+    }
 }
+

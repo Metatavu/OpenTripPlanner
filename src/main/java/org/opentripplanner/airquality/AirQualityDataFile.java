@@ -2,15 +2,17 @@ package org.opentripplanner.airquality;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 import com.vividsolutions.jts.geom.Envelope;
 
 import ucar.ma2.Array;
-import ucar.ma2.ArrayByte;
-import ucar.ma2.ArrayByte.D3;
-import ucar.ma2.InvalidRangeException;
+import ucar.ma2.ArrayFloat;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
+import ucar.nc2.units.DateUnit;
 
 /**
  * Class for representing single air quality data file
@@ -21,26 +23,27 @@ import ucar.nc2.Variable;
  */
 public class AirQualityDataFile {
 
+  private OffsetDateTime originDate;
   private String error;
   private Array timeArray;
   private Array latitudeArray;
   private Array longitudeArray;
-  private ArrayByte.D3 aqiArray;
+  private ArrayFloat.D3 aqiArray;
 
   /**
    * Constructor for the class.
    * 
    * @param file NetCDF file containing air quality data
    */
-  public AirQualityDataFile(File file) {
+  public AirQualityDataFile(String latitudeVariable, String longitudeVariable, String aqiVariable, String timeVariable, File file) {
     error = null;
 
     try {
       NetcdfFile netcdfFile = readNetcdfFile(file);
-      Variable time = netcdfFile.findVariable("time");
-      Variable latitude = netcdfFile.findVariable("latitude");
-      Variable longitude = netcdfFile.findVariable("longitude");
-      Variable aqi = netcdfFile.findVariable("AQI");
+      Variable time = netcdfFile.findVariable(timeVariable);
+      Variable latitude = netcdfFile.findVariable(latitudeVariable);
+      Variable longitude = netcdfFile.findVariable(longitudeVariable);
+      Variable aqi = netcdfFile.findVariable(aqiVariable);
       
       if (time == null) {
         error = String.format("Missing time variable from %s file", file.getAbsolutePath());
@@ -62,11 +65,21 @@ public class AirQualityDataFile {
         return;
       }
 
+      DateUnit dateUnit = new DateUnit(time.getUnitsString());
+      Date dateOrigin = dateUnit.getDateOrigin();
+      
+      if (dateOrigin == null) {
+        error = String.format("Missing origin date from %s file", file.getAbsolutePath());
+        return;
+      }
+      
+      originDate = OffsetDateTime.ofInstant(dateOrigin.toInstant(), ZoneId.systemDefault());
       timeArray = time.read();
       latitudeArray = latitude.read();
       longitudeArray = longitude.read();
-      aqiArray = (D3) aqi.read(new int[3], aqi.getShape());
-    } catch (IOException | InvalidRangeException e) {
+      aqiArray = (ArrayFloat.D3) aqi.read(null, aqi.getShape());
+          
+    } catch (Exception e) {
       error = e.getMessage();
     }
   }
@@ -134,8 +147,17 @@ public class AirQualityDataFile {
    * 
    * @return air quality data array
    */
-  public ArrayByte.D3 getAqiArray() {
+  public ArrayFloat.D3 getAqiArray() {
     return aqiArray;
+  }
+  
+  /**
+   * Returns origin date
+   * 
+   * @return origin date
+   */
+  public OffsetDateTime getOriginDate() {
+    return originDate;
   }
 
   /**
