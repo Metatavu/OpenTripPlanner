@@ -47,6 +47,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import javax.ws.rs.QueryParam;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
@@ -179,11 +180,26 @@ public class RoutingRequest implements Cloneable, Serializable {
      *  of not wanting to walk too much without asking for totally ridiculous itineraries, but this
      *  observation should in no way be taken as scientific or definitive. Your mileage may vary.*/
     public double walkReluctance = 2.0;
-    
+
     /**
-     * A multiplier for how much the air quality should affect the routing. Defaults to 0
+     * Threshold when the low air quality penalty starts to affect routing
      */
-    public double airQualityWeight = 0.0;
+    public Double airQualityPenaltyThresholdLow = 1.7d;
+
+    /**
+     * Threshold when the high air quality penalty starts to affect routing
+     */
+    public Double airQualityPenaltyThresholdHigh = 2.0d;
+
+    /**
+     * Low air quality penalty rate
+     */
+    public Double airQualityPenaltyLowRate = 10d;
+
+    /**
+     * High air quality penalty rate
+     */
+    public Double airQualityPenaltyHighRate = 50d;
     
     /** 
      * Air quality calculation mode, either TIME or DISTANCE 
@@ -1173,8 +1189,40 @@ public class RoutingRequest implements Cloneable, Serializable {
         }
     }
     
-    public void setAirQualityWeight(double airQualityWeight) {
-      this.airQualityWeight = airQualityWeight;
+    public Double getAirQualityPenaltyHighRate() {
+      return airQualityPenaltyHighRate;
+    }
+    
+    public void setAirQualityPenaltyHighRate(Double airQualityPenaltyHighRate) {
+      this.airQualityPenaltyHighRate = airQualityPenaltyHighRate;
+    }
+    
+    public Double getAirQualityPenaltyLowRate() {
+      return airQualityPenaltyLowRate;
+    }
+    
+    public void setAirQualityPenaltyLowRate(Double airQualityPenaltyLowRate) {
+      this.airQualityPenaltyLowRate = airQualityPenaltyLowRate;
+    }
+    
+    public Double getAirQualityPenaltyThresholdHigh() {
+      return airQualityPenaltyThresholdHigh;
+    }
+    
+    public void setAirQualityPenaltyThresholdHigh(Double airQualityPenaltyThresholdHigh) {
+      this.airQualityPenaltyThresholdHigh = airQualityPenaltyThresholdHigh;
+    }
+    
+    public Double getAirQualityPenaltyThresholdLow() {
+      return airQualityPenaltyThresholdLow;
+    }
+    
+    public void setAirQualityPenaltyThresholdLow(Double airQualityPenaltyThresholdLow) {
+      this.airQualityPenaltyThresholdLow = airQualityPenaltyThresholdLow;
+    }
+    
+    public String getAirQualityMode() {
+      return airQualityMode;
     }
     
     public void setAirQualityMode(String airQualityMode) {

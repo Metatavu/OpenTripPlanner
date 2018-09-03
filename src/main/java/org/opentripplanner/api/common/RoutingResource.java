@@ -111,10 +111,28 @@ public abstract class RoutingResource {
     protected Double walkReluctance;
     
     /**
-     * A multiplier for how much the air quality should affect the routing. Defaults to 0
+     * Threshold when the low air quality penalty starts to affect routing
      */
-    @QueryParam("airQualityWeight")
-    protected Double airQualityWeight;
+    @QueryParam("airQualityPenaltyThresholdLow")
+    protected Double airQualityPenaltyThresholdLow;
+
+    /**
+     * Threshold when the high air quality penalty starts to affect routing
+     */
+    @QueryParam("airQualityPenaltyThresholdHigh")
+    protected Double airQualityPenaltyThresholdHigh;
+
+    /**
+     * Low air quality penalty rate
+     */ 
+    @QueryParam("airQualityPenaltyLowRate")
+    protected Double airQualityPenaltyLowRate;
+
+    /**
+     * High air quality penalty rate
+     */
+    @QueryParam("airQualityPenaltyHighRate")
+    protected Double airQualityPenaltyHighRate;
 
     /**
      * A air quality routing mode. Either TIME or DISTANCE. Defaults to TIME
@@ -445,8 +463,17 @@ public abstract class RoutingResource {
         if (walkReluctance != null)
             request.setWalkReluctance(walkReluctance);
         
-        if (airQualityWeight != null)
-            request.setAirQualityWeight(airQualityWeight);
+        if (airQualityPenaltyThresholdLow != null)
+            request.setAirQualityPenaltyThresholdLow(airQualityPenaltyThresholdLow);
+        
+        if (airQualityPenaltyThresholdHigh != null)
+            request.setAirQualityPenaltyThresholdHigh(airQualityPenaltyThresholdHigh);
+        
+        if (airQualityPenaltyLowRate != null)
+            request.setAirQualityPenaltyLowRate(airQualityPenaltyLowRate);
+        
+        if (airQualityPenaltyHighRate != null)
+            request.setAirQualityPenaltyHighRate(airQualityPenaltyHighRate);
         
         if (airQualityMode != null)
             request.setAirQualityMode(airQualityMode);
