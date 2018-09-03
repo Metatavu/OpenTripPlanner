@@ -28,7 +28,7 @@ import org.opentripplanner.routing.core.Fare;
  * An Itinerary is one complete way of getting from the start location to the end location.
  */
 public class Itinerary {
-
+  
     /**
      * Duration of the trip on this itinerary, in seconds.
      */
@@ -60,7 +60,10 @@ public class Itinerary {
      * How far the user has to walk, in meters.
      */
     public Double walkDistance = 0.0;
-    
+
+    public Double pollutionExposure = 0d;
+
+
     /**
      * Indicates that the walk limit distance has been exceeded for this itinerary when true.
      */

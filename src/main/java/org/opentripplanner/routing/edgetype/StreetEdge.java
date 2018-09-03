@@ -549,6 +549,8 @@ public class StreetEdge extends Edge implements Cloneable {
               }
 
               double airQualityWeight = aqiValues[airQualityHour] * airQualityMultiplier;
+              
+              s1.incrementPollutionExposure(airQualityWeight);
 
               if (airQualityWeight > 0) {
                 s1.incrementWeight(airQualityWeight);

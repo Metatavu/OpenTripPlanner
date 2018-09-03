@@ -202,6 +202,10 @@ public class StateEditor {
         }
         child.weight += weight;
     }
+    
+    public void incrementPollutionExposure(double pollutionExposure) {
+      child.pollutionExposure += pollutionExposure;
+    }
 
     /**
      * Advance or rewind the time of the new state by the given non-negative amount. Direction of
