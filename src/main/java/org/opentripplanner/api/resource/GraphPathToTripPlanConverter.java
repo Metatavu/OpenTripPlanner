@@ -171,7 +171,7 @@ public abstract class GraphPathToTripPlanConverter {
 
         calculateElevations(itinerary, edges);
 
-        itinerary.pollutionExposure = lastState.pollutionExposure;
+        itinerary.pollutionExposure = lastState.getAvgPollutionExposure();
         itinerary.walkDistance = lastState.getWalkDistance();
 
         itinerary.transfers = lastState.getNumBoardings();

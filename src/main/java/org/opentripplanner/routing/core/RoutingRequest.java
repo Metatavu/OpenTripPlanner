@@ -184,22 +184,22 @@ public class RoutingRequest implements Cloneable, Serializable {
     /**
      * Threshold when the low air quality penalty starts to affect routing
      */
-    public Double airQualityPenaltyThresholdLow = 1.7d;
+    public Double airQualityPenaltyThresholdLow = 0d;
 
     /**
      * Threshold when the high air quality penalty starts to affect routing
      */
-    public Double airQualityPenaltyThresholdHigh = 2.0d;
+    public Double airQualityPenaltyThresholdHigh = 0d;
 
     /**
      * Low air quality penalty rate
      */
-    public Double airQualityPenaltyLowRate = 10d;
+    public Double airQualityPenaltyLowRate = 0d;
 
     /**
      * High air quality penalty rate
      */
-    public Double airQualityPenaltyHighRate = 50d;
+    public Double airQualityPenaltyHighRate = 0d;
     
     /** 
      * Air quality calculation mode, either TIME or DISTANCE 

@@ -38,7 +38,9 @@ public class State implements Cloneable {
     // accumulated weight up to this state
     public double weight;
     
-    public double pollutionExposure;
+    protected double pollutionExposureTotal;
+    
+    protected int pollutionExposureCount;
 
     // associate this state with a vertex in the graph
     protected Vertex vertex;
@@ -841,6 +843,10 @@ public class State implements Cloneable {
 
     public boolean hasEnteredNoThruTrafficArea() {
         return stateData.enteredNoThroughTrafficArea;
+    }
+
+    public double getAvgPollutionExposure() {
+      return pollutionExposureCount > 0 ? pollutionExposureTotal / pollutionExposureCount : 0;
     }
 
 }

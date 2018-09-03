@@ -204,7 +204,8 @@ public class StateEditor {
     }
     
     public void incrementPollutionExposure(double pollutionExposure) {
-      child.pollutionExposure += pollutionExposure;
+      child.pollutionExposureTotal += pollutionExposure;
+      child.pollutionExposureCount++;
     }
 
     /**

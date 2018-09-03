@@ -30,6 +30,7 @@ public class AirQualityEdgeUpdater {
   private AirQualityDataFile airQualityDataFile;
   private Collection<StreetEdge> streetEdges;
   private int edgesUpdated;
+  private long aqiTime = 0;
   
   /**
    * Constructor for air quality edge updater
@@ -42,6 +43,8 @@ public class AirQualityEdgeUpdater {
     this.airQualityDataFile = airQualityDataFile;
     this.streetEdges = streetEdges;
     this.edgesUpdated = 0;
+    this.aqiTime = this.airQualityDataFile.getOriginDate().toInstant().toEpochMilli();
+    LOG.info(String.format("Street edges update statring from time stamp %d", this.aqiTime));
   }
 
   /**
@@ -63,7 +66,7 @@ public class AirQualityEdgeUpdater {
     Coordinate toCoordinate = toVertex.getCoordinate();
     float[] aqi = getAverageAq(fromCoordinate.x, fromCoordinate.y, toCoordinate.x, toCoordinate.y);
     streetEdge.setAqi(aqi);
-    streetEdge.setAqiTime(this.airQualityDataFile.getOriginDate().toInstant().toEpochMilli());
+    streetEdge.setAqiTime(aqiTime);
     
     edgesUpdated++;
     
