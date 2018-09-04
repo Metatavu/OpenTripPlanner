@@ -173,8 +173,8 @@ public class GraphQlPlanner {
         callWith.argument("walkReluctance", request::setWalkReluctance);
         callWith.argument("airQualityPenaltyThresholdLow", request::setAirQualityPenaltyThresholdLow);
         callWith.argument("airQualityPenaltyThresholdHigh", request::setAirQualityPenaltyThresholdHigh);
-        callWith.argument("airQualityPenaltyLow", request::setAirQualityPenaltyLowRate);
-        callWith.argument("airQualityPenaltyHigh", request::setAirQualityPenaltyHighRate);
+        callWith.argument("airQualityPenaltyLowRate", request::setAirQualityPenaltyLowRate);
+        callWith.argument("airQualityPenaltyHighRate", request::setAirQualityPenaltyHighRate);
         callWith.argument("airQualityMode", request::setAirQualityMode);
         callWith.argument("walkOnStreetReluctance", request::setWalkOnStreetReluctance);
         callWith.argument("waitReluctance", request::setWaitReluctance);
