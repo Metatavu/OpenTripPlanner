@@ -16,6 +16,7 @@ package org.opentripplanner.updater;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.opentripplanner.airquality.AirQualityGraphUpdater;
+import org.opentripplanner.ngsi.NoiseLevelGraphUpdater;
 import org.opentripplanner.routing.graph.Graph;
 import org.opentripplanner.updater.alerts.GtfsRealtimeAlertsUpdater;
 import org.opentripplanner.updater.bike_park.BikeParkUpdater;
@@ -123,7 +124,10 @@ public abstract class GraphUpdaterConfigurator {
                 } 
                 else if (type.equals("air-quality")) {
                     updater = new AirQualityGraphUpdater();
-               }
+                }
+                else if (type.equals("noise-level")) {
+                    updater = new NoiseLevelGraphUpdater();
+                }
             }
 
             // Configure and activate the new updater.

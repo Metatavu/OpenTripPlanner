@@ -128,6 +128,9 @@ public class StreetEdge extends Edge implements Cloneable {
     
     /** Air quality indices */
     private float[] aqi;
+
+    /** Current noise level */
+    private double noiseLevel;
     
     /** Value indicating time of first aqi array cell **/
     private long aqiTime;
@@ -1018,6 +1021,24 @@ public class StreetEdge extends Edge implements Cloneable {
     
     public void setAqiTime(long aqiTime) {
       this.aqiTime = aqiTime;
+    }
+
+    /**
+     * Gets the noise level
+     * 
+     * @return the noiseLevel
+     */
+    public double getNoiseLevel() {
+        return noiseLevel;
+    }
+
+    /**
+     * Sets the noise level
+     * 
+     * @param noiseLevel the noiseLevel to set
+     */
+    public void setNoiseLevel(double noiseLevel) {
+        this.noiseLevel = noiseLevel;
     }
 }
 
