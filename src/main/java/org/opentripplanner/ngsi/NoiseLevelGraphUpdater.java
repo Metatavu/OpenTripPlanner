@@ -188,11 +188,11 @@ public class NoiseLevelGraphUpdater extends PollingGraphUpdater {
     }
 
     private boolean edgeNearNoiseSource(Coordinate noiseSource, LineString edgeGeometry) {
-      if(noiseSource.distance(edgeGeometry.getStartPoint().getCoordinate()) < 0.005) {
+      if(noiseSource.distance(edgeGeometry.getStartPoint().getCoordinate()) < 0.002) {
         return true;
       }
 
-      return noiseSource.distance(edgeGeometry.getEndPoint().getCoordinate()) < 0.005;
+      return noiseSource.distance(edgeGeometry.getEndPoint().getCoordinate()) < 0.002;
     }
 
     @Override

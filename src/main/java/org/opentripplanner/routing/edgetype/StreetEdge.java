@@ -541,58 +541,79 @@ public class StreetEdge extends Edge implements Cloneable {
         Double airQualityPenaltyLowRate = options.getAirQualityPenaltyLowRate();
         Double airQualityPenaltyThresholdHigh = options.getAirQualityPenaltyThresholdHigh();
         Double airQualityPenaltyThresholdLow = options.getAirQualityPenaltyThresholdLow();
-        
-        
         boolean useAirQuality = airQualityPenaltyHighRate > 0 || airQualityPenaltyLowRate > 0 || airQualityPenaltyThresholdHigh > 0 || airQualityPenaltyThresholdLow > 0;
         boolean walkingOrBiking = traverseMode == TraverseMode.WALK || traverseMode == TraverseMode.BICYCLE;
         
         if (walkingOrBiking && useAirQuality) {
-          if (airQualityPenaltyHighRate <= 0) {
-            airQualityPenaltyHighRate = 50.00d;
-            System.out.println("Routing by air quality by airQualityPenaltyHighRate is not set");
-          }
-          
-          if (airQualityPenaltyLowRate <= 0) {
-            airQualityPenaltyLowRate = 10.00d;
-            System.out.println("Routing by air quality by airQualityPenaltyLowRate is not set");
-          }
-          
-          if (airQualityPenaltyThresholdHigh <= 0) {
-            airQualityPenaltyThresholdHigh = 2.00d;
-            System.out.println("Routing by air quality by airQualityPenaltyThresholdHigh is not set");
-          }
-          
-          if (airQualityPenaltyThresholdLow <= 0) {
-            airQualityPenaltyThresholdLow = 1.75d;
-            System.out.println("Routing by air quality by airQualityPenaltyThresholdLow is not set");
-          }
-          
-          Instant aqiTimeInstant = Instant.ofEpochMilli(getAqiTime());
-          Instant requestInstant = options.getDateTime().toInstant();
-          
-          int airQualityHour = (int) ChronoUnit.HOURS.between(aqiTimeInstant, requestInstant);
-          if (aqi != null && airQualityHour >= 0 && airQualityHour < aqi.length) {
-            float[] aqiValues = getAqi();
-            float aqiValue = aqiValues[airQualityHour];
-            double airQualityPenalty = 0d;
+            if (airQualityPenaltyHighRate <= 0) {
+                airQualityPenaltyHighRate = 50.00d;
+                System.out.println("Routing by air quality by airQualityPenaltyHighRate is not set");
+            }
             
-            if (aqiValue > airQualityPenaltyThresholdHigh) {
-              // If quality of air is worse than high threshold we apply the high penalty to this route
-              airQualityPenalty = (aqiValue + 1 - airQualityPenaltyThresholdHigh) * airQualityPenaltyHighRate;
-            } else if (aqiValue > airQualityPenaltyThresholdLow) {
-              // If quality of air is worse than low threshold we apply the low penalty to this route
-              airQualityPenalty = (aqiValue + 1 - airQualityPenaltyThresholdLow) * airQualityPenaltyLowRate;
+            if (airQualityPenaltyLowRate <= 0) {
+                airQualityPenaltyLowRate = 10.00d;
+                System.out.println("Routing by air quality by airQualityPenaltyLowRate is not set");
+            }
+            
+            if (airQualityPenaltyThresholdHigh <= 0) {
+                airQualityPenaltyThresholdHigh = 2.00d;
+                System.out.println("Routing by air quality by airQualityPenaltyThresholdHigh is not set");
+            }
+            
+            if (airQualityPenaltyThresholdLow <= 0) {
+                airQualityPenaltyThresholdLow = 1.75d;
+                System.out.println("Routing by air quality by airQualityPenaltyThresholdLow is not set");
+            }
+            
+            Instant aqiTimeInstant = Instant.ofEpochMilli(getAqiTime());
+            Instant requestInstant = options.getDateTime().toInstant();
+            
+            int airQualityHour = (int) ChronoUnit.HOURS.between(aqiTimeInstant, requestInstant);
+            if (aqi != null && airQualityHour >= 0 && airQualityHour < aqi.length) {
+                float[] aqiValues = getAqi();
+                float aqiValue = aqiValues[airQualityHour];
+                double airQualityPenalty = 0d;
+                
+                if (aqiValue > airQualityPenaltyThresholdHigh) {
+                    // If quality of air is worse than high threshold we apply the high penalty to this route
+                    airQualityPenalty = (aqiValue + 1 - airQualityPenaltyThresholdHigh) * airQualityPenaltyHighRate;
+                } else if (aqiValue > airQualityPenaltyThresholdLow) {
+                    // If quality of air is worse than low threshold we apply the low penalty to this route
+                    airQualityPenalty = (aqiValue + 1 - airQualityPenaltyThresholdLow) * airQualityPenaltyLowRate;
+                } 
+                
+                if (airQualityPenalty > 0d) {
+                    // Apply the air quality penalty
+                    double penaltyMultiplier = "DISTANCE".equals(options.airQualityMode) ? s0.getWalkDistanceDelta() : roundedTime;
+                    s1.incrementWeight(penaltyMultiplier * airQualityPenalty);
+                }
+
+                s1.incrementPollutionExposure(aqiValue);
+            } else {
+                System.out.println(String.format("StreetEdge does not contain air quality index for hour %d, aqi from %s (%d), request %s", airQualityHour, aqiTimeInstant.toString(), this.aqiTime, requestInstant.toString()));
+            }
+        }
+        
+        Double noisePenaltyHighRate = 10d; // TODO: add option
+        Double noisePenaltyLowRate = 5d; // TODO: add option
+        Double noisePenaltyThresholdHigh = 80d; // TODO: add option
+        Double noisePenaltyThresholdLow = 70d; // TODO: add option
+        boolean useNoiseRouting = useAirQuality; // TODO: this should be separate option
+
+        if (useNoiseRouting) {
+            double noiseLevel = getNoiseLevel();
+            double noisePenalty = 0d;
+
+            if (noiseLevel > noisePenaltyThresholdHigh) {
+                noisePenalty = (noiseLevel + 1 - noisePenaltyThresholdHigh) * noisePenaltyHighRate;
+            } else if (noiseLevel > noisePenaltyThresholdLow) {
+                noisePenalty = (noiseLevel + 1 - noisePenaltyThresholdLow) * noisePenaltyLowRate;
             } 
             
-            if (airQualityPenalty > 0d) {
-              // Apply the air quality penalty
-              double penaltyMultiplier = "DISTANCE".equals(options.airQualityMode) ? s0.getWalkDistanceDelta() : roundedTime;
-              s1.incrementWeight(penaltyMultiplier * airQualityPenalty);       
-              s1.incrementPollutionExposure(aqiValue);
+            if (noisePenalty > 0d) {
+                s1.incrementWeight(roundedTime * noisePenalty);
             }
-          } else {
-            System.out.println(String.format("StreetEdge does not contain air quality index for hour %d, aqi from %s (%d), request %s", airQualityHour, aqiTimeInstant.toString(), this.aqiTime, requestInstant.toString()));
-          }
+
         }
 
         return s1;
