@@ -171,7 +171,11 @@ public class GraphQlPlanner {
         callWith.argument("carParkCarLegWeight", request::setCarParkCarLegWeight);
         callWith.argument("itineraryFiltering", request::setItineraryFiltering);
         callWith.argument("walkReluctance", request::setWalkReluctance);
-        callWith.argument("airQualityWeight", request::setAirQualityWeight);
+        callWith.argument("airQualityPenaltyThresholdLow", request::setAirQualityPenaltyThresholdLow);
+        callWith.argument("airQualityPenaltyThresholdHigh", request::setAirQualityPenaltyThresholdHigh);
+        callWith.argument("airQualityPenaltyLowRate", request::setAirQualityPenaltyLowRate);
+        callWith.argument("airQualityPenaltyHighRate", request::setAirQualityPenaltyHighRate);
+        callWith.argument("airQualityMode", request::setAirQualityMode);
         callWith.argument("walkOnStreetReluctance", request::setWalkOnStreetReluctance);
         callWith.argument("waitReluctance", request::setWaitReluctance);
         callWith.argument("waitAtBeginningFactor", request::setWaitAtBeginningFactor);
@@ -179,7 +183,7 @@ public class GraphQlPlanner {
         callWith.argument("bikeSpeed", (Double v) -> request.bikeSpeed = v);
         callWith.argument("bikeSwitchTime", (Integer v) -> request.bikeSwitchTime = v);
         callWith.argument("bikeSwitchCost", (Integer v) -> request.bikeSwitchCost = v);
-
+        
         OptimizeType optimize = environment.getArgument("optimize");
 
         if (optimize == OptimizeType.TRIANGLE) {

@@ -69,7 +69,11 @@ public final class SentryUtilities {
         sentryContext.addExtra("zoneids", request.getZoneIdSet().toString());
         sentryContext.addExtra("maxWalkDistance", request.maxWalkDistance);
         sentryContext.addExtra("walkReluctance", request.walkReluctance);
-        sentryContext.addExtra("airQualityWeight", request.airQualityWeight);
+//        sentryContext.addExtra("airQualityPenaltyThresholdLow", request.airQualityPenaltyThresholdLow);
+//        sentryContext.addExtra("airQualityPenaltyThresholdHigh", request.airQualityPenaltyThresholdHigh);
+//        sentryContext.addExtra("airQualityPenaltyLowRate", request.airQualityPenaltyLowRate);
+//        sentryContext.addExtra("airQualityPenaltyHighRate", request.airQualityPenaltyHighRate);
+//        sentryContext.addExtra("airQualityMode", request.airQualityMode);
         sentryContext.addExtra("walkSpeed", request.walkSpeed);
         sentryContext.addExtra("stairsReluctance", request.stairsReluctance);
         sentryContext.addExtra("walkOnStreetReluctance", request.walkOnStreetReluctance);
